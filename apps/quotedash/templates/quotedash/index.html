@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Python Exam</title>
+		<meta name="description" content="Coding Dojo - Python Exam">
+	
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	</head>
+	<body>
+	<!-- Title Bar -->
+		<div class="row">
+			<div class="container">
+				<div class="col bg-primary my-2 py-2 rounded">
+					<table class="w-100">
+						<tr>
+							<td>
+								{% if request.session.uid %}
+								<h3 class="my-1 text-light">Hello {{ request.session.fname }} {{ request.session.lname }}!</h3>
+								{% else %}
+								<h3 class="my-1 text-light">QuoteDash</h3>
+								{% endif %}
+							</td>
+							<td>
+								<div class="text-right">
+								{% if request.session.uid %}
+									<a href="/users/edit" class="btn btn-outline-light btn-sm my-1">Edit My Account</a>
+									<a href="/users/logout" class="btn btn-outline-light btn-sm my-1">Log Out</a>
+								{% else %}
+									<a href="/users" class="btn btn-outline-light btn-sm my-1">Make Account / Log In</a>
+								{% endif %}
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- Django Message Display -->
+		<div class="row justify-content-center">
+			{% if messages %}
+			<div class="container">
+				<div class="col-sm bg-warning rounded my-2 py-1">
+					<ul class="messages my-1">
+					{% for message in messages %}
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		<!-- Website Body -->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<h3>Quotes</h3>
+					{% if quotes %}
+						{% for x in quotes %}
+						<div class="container">
+							<div class="container border shadow my-2 mx-2 py-2 px-2 rounded">
+							<h5><span class="text-primary">{{ x.author }}</span> said:</h5>
+							<p>"{{ x.quote }}"</p>
+							<div class="text-right">
+								{% if x.likeCount == 1 %}
+								<h6>1 person likes this!</h6>
+								{% elif x.likeCount >= 2 %}
+								<h6>{{ x.likeCount }} people like this!</h6>
+								{% endif %}
+								{% if request.session.uid %}
+									{% if x.user_id.id != request.session.uid %}
+									<a href="/quotedash/like/{{ x.id }}" class="badge badge-primary my-1">Like!</a>
+									{% endif %}
+								{% endif %}
+							</div>
+							</div>
+							<table class="w-100">
+								<tr>
+									<td>
+									<p class="text-secondary"><small>Posted by <a href="/quotedash/user/{{x.user_id.id}}">{{ x.user_id.first_name }} {{ x.user_id.last_name }}</a> on {{ x.created_at }}</small></p>
+									</td>
+									<td>
+									{% if x.user_id.id == request.session.uid %}
+									<p class="text-right"><small><a href="/quotedash/deletequote/{{x.id}}">Delete</a></small></p>
+									{% endif %}
+									</td>
+								</tr>
+							</table>
+						</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+				<div class="col-sm-6">
+					{% if request.session.uid %}
+					<h4>Add a quote:</h4>
+					<div class="form-group">
+						<form action="/quotedash/postquote" method="post">
+						{% csrf_token %}
+						<textarea class="form-control my-1" name="quoteBody" placeholder="Enter quote here."></textarea>
+						<input type="text" class="form-control" name="quoteAuthor" placeholder="Who said it?"></input>
+						<p class="text-right">
+						<input type="submit" class="btn btn-primary my-2" value="Post the quote!"></input>
+						</p>
+						</form>
+					</div>
+					{% endif %}
+					<div class="container">
+						<h4>About</h4>
+						<p>This is a quick website put together for a <a href="https://www.codingdojo.com/">Coding Dojo</a> exam. It uses Django, Bootstrap, some duct tape, and a prayer.</p>
+						<table class="w-100"
+							<tr>
+								<td class="text-center">
+								<a href="https://www.djangoproject.com/">
+								<img src="/static/quotedash/images/django-logo-negative.png" alt="Django logo" class="img-fluid rounded shadow" width="120px"><br>
+								<small>Django 1.10</small></a>
+								</td>
+								<td class="text-center">
+								<a href="https://getbootstrap.com/">
+								<img src="/static/quotedash/images/bootstrap-solid.svg" alt="Bootstrap logo" class="img-fluid rounded shadow" width="70px"><br>
+								<small>Bootstrap</small></a>
+								</td>
+							</tr>
+						</table>
+						<p>The veracity of the quotes stored on the site cannot be verified. We're simply at the mercy of whatever the users submit.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Python Exam</title>
+		<meta name="description" content="Coding Dojo - Python Exam">
+	
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	</head>
+	<body>
+	<!-- Title Bar -->
+		<div class="row">
+			<div class="container">
+				<div class="col bg-primary my-2 py-2 rounded">
+					<table class="w-100">
+						<tr>
+							<td>
+								{% if request.session.uid %}
+								<h3 class="my-1 text-light">Hello {{ request.session.fname }} {{ request.session.lname }}!</h3>
+								{% else %}
+								<h3 class="my-1 text-light">Login/Registration</h3>
+								{% endif %}
+							</td>
+							<td>
+								<div class="text-right">
+								{% if request.session.uid %}
+									<a href="/users/edit" class="btn btn-outline-light btn-sm my-1">Edit My Account</a>
+									<a href="/users/logout" class="btn btn-outline-light btn-sm my-1">Log Out</a>
+								{% else %}
+									<a href="/quotedash" class="btn btn-outline-light btn-sm my-1">Go to QuoteDash</a>
+								{% endif %}
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- Django Message Display -->
+		<div class="row justify-content-center">
+			{% if messages %}
+			<div class="container">
+				<div class="col-sm bg-warning rounded my-2 py-1">
+					<ul class="messages my-1">
+					{% for message in messages %}
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		<!-- Website Body -->
+		<div class="container">
+		<div class="row">
+		<div class="col-sm-6">
+			<h3>Register</h3>
+			<table class="w-100">
+			<form action="/users/register" method="post">
+				{% csrf_token %}
+				<tr>
+				<td><p>First Name:</td>
+				<td><input type="text" name="first_name" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><p>Last Name:</td>
+				<td><input type="text" name="last_name" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><p>E-mail:</td>
+				<td><input type="text" name="email" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><p>Password:</td>
+				<td><input type="password" name="password" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><p>Confirm Password:</td>
+				<td><input type="password" name="confirm_password" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><input class="btn btn-primary" type="submit" value="Submit"></input></td>
+				</tr>
+			</form>
+			</table>
+		</div>
+		<div class="col-sm-6">
+			<h3>Login</h3>
+			<table class="w-100">
+			<form action="/users/login" method="post">
+				{% csrf_token %}
+				<tr>
+				<td><p>E-mail:</td>
+				<td><input type="text" name="email" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><p>Password:</td>
+				<td><input type="password" name="password" class="form-control"></input></p></td>
+				</tr>
+				<tr>
+				<td><input class="btn btn-primary" type="submit" value="Login"></input></td>
+				</tr>
+			</form>
+		</div>
+		</div>
+		</div>
+	</body>
+</html>
